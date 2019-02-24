@@ -1,5 +1,6 @@
 package me.iskhakov.GoL.S2;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -19,13 +20,37 @@ public class Main {
 
 
         for(int i = 0; i < gen; i++) {
-            nextGen = nextGen.nextGeneration("Generation: " + (i+1), nextWorld);
-            // Swap worlds
+            // Cross-platform screen cleanscreen
+            try {
+                if (System.getProperty("os.name").contains("Windows"))
+                    new ProcessBuilder("cmd","/c","cls").inheritIO().start().waitFor();
+                else
+                    Runtime.getRuntime().exec("clear");
+            } catch (IOException | InterruptedException e) {}
+
+            // Generation evolution
+            nextGen = nextGen.nextGeneration("Generation: #" + (i+1), nextWorld);
+
+            // Printing infos
+            System.out.println(nextGen.getName());
+            //System.out.println("Alive: " + nextGen.getWorld().getAliveNumber()); // -- slow operation
+            int alive =  nextGen.getPrecalculatedAlive();
+            System.out.println("Alive: " + alive);
+            System.out.println(nextGen.getWorld());
+            if(alive == 0) {
+                System.out.println("Population died on " + (i+1) + "th step.");
+                break;
+            }
+
+            // Swap worlds to save memory
             temp = world;
             world = nextWorld;
             nextWorld = temp;
-        }
 
-        System.out.println(nextGen.getWorld());
+            // Preserve user's eyes =)
+            try {
+                Thread.sleep(200);
+            } catch(InterruptedException e) {}
+        }
     }
 }

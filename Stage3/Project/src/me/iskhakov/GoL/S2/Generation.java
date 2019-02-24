@@ -3,6 +3,7 @@ package me.iskhakov.GoL.S2;
 class Generation {
     private World world;
     private String name;
+    private int precalculatedAlive;
 
     Generation(World world) {
         this.world = world;
@@ -19,6 +20,10 @@ class Generation {
 
     public World getWorld() {
         return world;
+    }
+
+    public int getPrecalculatedAlive() {
+        return precalculatedAlive;
     }
 
     /**
@@ -88,6 +93,7 @@ class Generation {
         }
 
         Generation nextGen = new Generation(existingWorld, name);
+        int aliveCounter = 0;
 
         int neighbours = 0;
         for(int i = 0; i < rows; i++) {
@@ -96,12 +102,14 @@ class Generation {
                 Cell.State nextState = null;
                 if((neighbours == 2 || neighbours == 3) && world.get(i, j).isAlive()) {
                     nextState = Cell.State.ALIVE;
+                    aliveCounter++;
                 } else if (!world.get(i,j).isAlive() && neighbours == 3) {
                     nextState = Cell.State.ALIVE;
+                    aliveCounter++;
                 } else {
                     nextState = Cell.State.DEAD;
                 }
-
+                nextGen.precalculatedAlive = aliveCounter;
                 nextGen.world.set(i, j, new Cell(nextState));
             }
         }

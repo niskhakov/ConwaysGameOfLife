@@ -53,4 +53,16 @@ class World {
         return world[0].length;
     }
 
+    public int getAliveNumber() {
+        int counter = 0;
+        for(int i = 0; i < world.length; i++) {
+            for(int j = 0; j < world[i].length; j++) {
+                if(world[i][j].isAlive()) {
+                    counter++;
+                }
+            }
+        }
+        return counter;
+    }
+
 }
